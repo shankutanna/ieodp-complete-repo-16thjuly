@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+sqlalchemy
+mysqlclient
+python-jose
+pydantic>=2.0
+pydantic-settings
+celery
+redis
+pytest
+httpx

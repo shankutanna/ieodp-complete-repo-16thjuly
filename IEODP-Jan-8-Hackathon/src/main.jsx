@@ -1,0 +1,22 @@
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import { BrowserRouter } from 'react-router-dom'
+import App from './App'
+import { Provider } from 'react-redux'
+import ErrorBoundary from './shared/ErrorBoundary'
+import { ToastContainer } from 'react-toastify'
+import { store } from './store/store'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <Provider store={store}>
+      <BrowserRouter>
+        <ErrorBoundary>
+          <App />
+          <ToastContainer position="top-center" />
+        </ErrorBoundary>
+      </BrowserRouter>
+    </Provider>
+  </StrictMode>,
+)

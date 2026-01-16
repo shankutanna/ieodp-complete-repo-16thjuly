@@ -1,0 +1,221 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Ravi Kumar",
+      "email": "ravi@corp.com",
+      "department": "Finance",
+      "role": "OPERATIONS",
+      "password": "123456"
+    },
+    {
+      "id": "2",
+      "name": "Anita Sharma",
+      "email": "anita@corp.com",
+      "department": "Finance",
+      "role": "MANAGEMENT",
+      "password": "123456"
+    },
+    {
+      "id": "3",
+      "name": "Vikram Rao",
+      "email": "vikram@corp.com",
+      "department": "Executive",
+      "role": "LEADERSHIP",
+      "password": "123456"
+    },
+    {
+      "id": "4",
+      "name": "Neha Patel",
+      "email": "neha@corp.com",
+      "department": "Compliance",
+      "role": "AUDITORS",
+      "password": "123456"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "1",
+      "name": "High Value Transaction",
+      "type": "HIGH_VALUE_TRANSACTION",
+      "status": "CREATED",
+      "createdBy": 1,
+      "createdAt": "2026-01-01T10:00:00"
+    },
+    {
+      "id": "2",
+      "name": "Vendor Payment Approval",
+      "type": "VENDOR_PAYMENT",
+      "status": "REVIEW",
+      "createdBy": 1,
+      "createdAt": "2026-01-02T11:00:00"
+    },
+    {
+      "id": "c3a5",
+      "name": "value",
+      "status": "CREATED",
+      "createdAt": "2026-01-09T06:12:11.320Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Verify KYC Documents",
+      "status": "PENDING",
+      "assignedTo": 1,
+      "workflowId": 1
+    },
+    {
+      "id": "2",
+      "title": "Validate Invoice",
+      "status": "COMPLETED",
+      "assignedTo": 1,
+      "workflowId": 2
+    }
+  ],
+  "approvals": [
+    {
+      "id": "1",
+      "workflowId": 2,
+      "status": "REVIEW",
+      "createdBy": "Ravi Kumar"
+    }
+  ],
+  "aiInsights": [
+    {
+      "id": "1",
+      "title": "Unusual Transaction Spike",
+      "description": "High volume detected in short time for High Value Transaction",
+      "riskScore": 0.82,
+      "recommendation": "Escalate to leadership",
+      "workflowId": 1
+    },
+    {
+      "id": "2",
+      "title": "Vendor Risk Alert",
+      "description": "Vendor has previous compliance issues",
+      "riskScore": 0.67,
+      "recommendation": "Perform additional checks",
+      "workflowId": 2
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "1",
+      "userName": "Ravi Kumar",
+      "role": "OPERATIONS",
+      "action": "WORKFLOW_CREATED",
+      "entity": "WORKFLOW",
+      "entityId": "1",
+      "previousState": null,
+      "newState": "CREATED",
+      "timestamp": "2026-01-01T10:00:00"
+    },
+    {
+      "id": "2",
+      "userName": "Ravi Kumar",
+      "role": "OPERATIONS",
+      "action": "TASK_COMPLETED",
+      "entity": "TASK",
+      "entityId": "2",
+      "previousState": "PENDING",
+      "newState": "COMPLETED",
+      "timestamp": "2026-01-02T12:00:00"
+    },
+    {
+      "id": "3",
+      "userName": "Anita Sharma",
+      "role": "MANAGEMENT",
+      "action": "WORKFLOW_APPROVED",
+      "entity": "WORKFLOW",
+      "entityId": "2",
+      "previousState": "REVIEW",
+      "newState": "APPROVED",
+      "timestamp": "2026-01-02T13:00:00"
+    },
+    {
+      "id": "0234",
+      "entity": "TICKET",
+      "entityId": "61a2",
+      "userName": "Enterprise User",
+      "role": "AUDITORS",
+      "action": "AUDITOR_REVERIFY",
+      "previousState": "ACTION_TAKEN",
+      "newState": "REVERIFY",
+      "timestamp": "2026-01-09T06:51:52.989Z"
+    },
+    {
+      "id": "518f",
+      "entity": "TICKET",
+      "entityId": "57c7",
+      "userName": "Enterprise User",
+      "role": "AUDITORS",
+      "action": "AUDITOR_REVERIFY",
+      "previousState": "ACTION_TAKEN",
+      "newState": "REVERIFY",
+      "timestamp": "2026-01-09T10:38:53.054Z"
+    }
+  ],
+  "tickets": [
+    {
+      "id": "1",
+      "title": "Payment Delay Issue",
+      "description": "Vendor payment delayed by 5 days",
+      "priority": "HIGH",
+      "status": "CLOSED",
+      "raisedBy": 1,
+      "leadershipComment": "verified the payment and move forword for next step",
+      "managementAction": "forwarrd to auditor for final approval",
+      "auditorDecision": "REJECTED",
+      "createdAt": "2026-01-05T10:00:00"
+    },
+    {
+      "id": "61a2",
+      "title": "hello ",
+      "description": "hejkkkkkkk",
+      "priority": "MEDIUM",
+      "status": "REVERIFY",
+      "raisedBy": 1,
+      "leadershipComment": "kvljhfjhlvvkjbj",
+      "managementAction": "forwraded for auditor approval ",
+      "auditorDecision": "REVERIFY",
+      "createdAt": "2026-01-08T11:21:50.517Z"
+    },
+    {
+      "id": "jkgjhf",
+      "title": "Payment Delay Issue",
+      "description": "Vendor payment delayed by 5 days",
+      "priority": "HIGH",
+      "status": "CLOSED",
+      "raisedBy": 1,
+      "leadershipComment": "Reviewed",
+      "managementAction": "Approved payment",
+      "auditorDecision": "APPROVED",
+      "createdAt": "2026-01-05T10:00:00"
+    },
+    {
+      "id": "7767",
+      "title": "IEODP rise Ticket",
+      "description": "IEODP rise Ticket",
+      "priority": "HIGH",
+      "status": "FORWARDED_TO_MANAGEMENT",
+      "raisedBy": 1,
+      "leadershipComment": "jjhjhvjbkjv",
+      "managementAction": "",
+      "auditorDecision": "",
+      "createdAt": "2026-01-09T05:18:02.777Z"
+    },
+    {
+      "id": "57c7",
+      "title": "testing the app with ticket 1",
+      "description": "ticket 111",
+      "priority": "LOW",
+      "status": "REVERIFY",
+      "raisedBy": 1,
+      "leadershipComment": "leadership component is working correctly ",
+      "managementAction": "Management component is working correctly ",
+      "auditorDecision": "REVERIFY",
+      "createdAt": "2026-01-09T10:36:40.747Z"
+    }
+  ]
+}

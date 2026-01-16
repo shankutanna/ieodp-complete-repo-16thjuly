@@ -1,0 +1,64 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: ieodp
+      MYSQL_USER: ieodp_user
+      MYSQL_PASSWORD: ieodp_pass
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - ieodp-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  springboot:
+    build:
+      context: ../ieodp-springboot-backend-14thjan
+      dockerfile: Dockerfile
+    image: springboot-backend:latest
+    container_name: springboot-java
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ieodp
+      SPRING_DATASOURCE_USERNAME: ieodp_user
+      SPRING_DATASOURCE_PASSWORD: ieodp_pass
+    ports:
+      - "8080:8080"
+    networks:
+      - ieodp-net
+
+  python:
+    image: pthon-backend:latest
+    container_name: pthon-backend
+    ports:
+      - "8000:8000"
+    networks:
+      - ieodp-net
+
+  react:
+    image: react-frontend:latest
+    container_name: react-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - springboot
+    networks:
+      - ieodp-net
+
+networks:
+  ieodp-net:
+
+volumes:
+  mysql_data:
+
