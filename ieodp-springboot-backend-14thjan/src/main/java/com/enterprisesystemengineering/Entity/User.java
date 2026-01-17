@@ -1,78 +1,90 @@
-package com.enterprisesystemengineering.Entity;
+package com.enterprisesystemengineering.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.enterprisesystemengineering.enums.UserRole;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
-import java.util.List;
+import java.time.Instant;
 
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @NotBlank
-    private String name;
+    @Column(nullable = false, length = 100)
+    private String firstName;
 
-    @Email
-    @NotBlank
-    @Column(unique = true, updatable = false)
+    @Column(nullable = false, length = 100)
+    private String lastName;
+
+    @Column(nullable = false, unique = true, length = 100)
+    private String username;
+
+    @Column(nullable = false, unique = true, length = 150)
     private String email;
 
-    @NotBlank
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @Column(length = 10)
+    private String mobileNumber;
 
+    @Column(length = 20)
+    private String gender;
+
+    @Column(length = 100)
     private String department;
 
-    private boolean active = true;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role = UserRole.OPERATIONS;
 
-    /* ================= Spring Security ================= */
+    @Column(name = "created_at")
+    private Instant createdAt = Instant.now();
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
-    }
+    @Column(name = "updated_at")
+    private Instant updatedAt = Instant.now();
 
-    @Override
-    public String getUsername() {
-        return email;
-    }
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    @Override public boolean isAccountNonExpired() { return active; }
-    @Override public boolean isAccountNonLocked() { return active; }
-    @Override public boolean isCredentialsNonExpired() { return active; }
-    @Override public boolean isEnabled() { return active; }
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
 
-    /* ================= Getters & Setters ================= */
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
 
-    public String getId() { return id; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
     public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
-    public Role getRole() { return role; }
-    public void setRole(Role role) { this.role = role; }
+    public String getMobileNumber() { return mobileNumber; }
+    public void setMobileNumber(String mobileNumber) { this.mobileNumber = mobileNumber; }
+
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
 
     public String getDepartment() { return department; }
     public void setDepartment(String department) { this.department = department; }
 
-    public boolean isActive() { return active; }
-    public void setActive(boolean active) { this.active = active; }
+    public UserRole getRole() { return role; }
+    public void setRole(UserRole role) { this.role = role; }
+
+    public Instant getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+
+    public Instant getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
+
+    public String getName() {
+        return firstName + " " + lastName;
+    }
 }
 
