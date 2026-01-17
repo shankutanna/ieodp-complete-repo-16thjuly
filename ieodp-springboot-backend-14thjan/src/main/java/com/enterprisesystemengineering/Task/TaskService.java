@@ -1,4 +1,4 @@
-package com.enterprisesystemengineering.Task;
+package com.enterprisesystemengineering.task;
 
 import com.enterprisesystemengineering.audit.AuditService;
 import org.springframework.security.core.Authentication;

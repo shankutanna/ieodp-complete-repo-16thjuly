@@ -1,4 +1,4 @@
-package com.enterprisesystemengineering.AiInsight;
+package com.enterprisesystemengineering.aiinsight;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

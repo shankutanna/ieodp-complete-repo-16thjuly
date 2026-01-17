@@ -2,10 +2,19 @@ package com.enterprisesystemengineering.entity;
 
 import com.enterprisesystemengineering.enums.UserRole;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.Instant;
 
 @Entity
 @Table(name = "users")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -46,45 +55,16 @@ public class User {
     @Column(name = "updated_at")
     private Instant updatedAt = Instant.now();
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
-
-    public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
-
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-
-    public String getMobileNumber() { return mobileNumber; }
-    public void setMobileNumber(String mobileNumber) { this.mobileNumber = mobileNumber; }
-
-    public String getGender() { return gender; }
-    public void setGender(String gender) { this.gender = gender; }
-
-    public String getDepartment() { return department; }
-    public void setDepartment(String department) { this.department = department; }
-
-    public UserRole getRole() { return role; }
-    public void setRole(UserRole role) { this.role = role; }
-
-    public Instant getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
-
-    public Instant getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
-
     public String getName() {
         return firstName + " " + lastName;
+    }
+
+    public boolean isActive() {
+        return true;
+    }
+
+    public void setActive(boolean active) {
+        // For compatibility
     }
 }
 

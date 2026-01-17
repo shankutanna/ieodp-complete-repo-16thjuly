@@ -1,5 +1,10 @@
-package com.enterprisesystemengineering.Entity;
+package com.enterprisesystemengineering.controller;
 
+import com.enterprisesystemengineering.dto.RegisterUserDto;
+import com.enterprisesystemengineering.entity.User;
+import com.enterprisesystemengineering.entity.Role;
+import com.enterprisesystemengineering.repository.UserRepository;
+import com.enterprisesystemengineering.security.JwtTokenProvider;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,23 +15,36 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173", "http://43.205.133.117:3000"})
 public class UserController {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@Valid @RequestBody User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
+    public ResponseEntity<User> registerUser(@Valid @RequestBody RegisterUserDto registerDto) {
+        if (userRepository.findByEmail(registerDto.getEmail()).isPresent()) {
             throw new RuntimeException("Email already exists");
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        
+        User user = new User();
+        user.setFirstName(registerDto.getFirstName());
+        user.setLastName(registerDto.getLastName());
+        user.setUsername(registerDto.getUsername());
+        user.setEmail(registerDto.getEmail());
+        user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+        user.setMobileNumber(registerDto.getMobileNumber());
+        user.setGender(registerDto.getGender());
+        user.setDepartment(registerDto.getDepartment());
+        
         return ResponseEntity.status(HttpStatus.CREATED).body(userRepository.save(user));
     }
 
@@ -38,7 +56,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGEMENT') or #id == authentication.principal")
-    public ResponseEntity<User> getUserById(@PathVariable String id) {
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return ResponseEntity.ok(user);
@@ -46,28 +64,29 @@ public class UserController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal")
-    public ResponseEntity<User> updateUser(@PathVariable String id, @Valid @RequestBody User userDetails) {
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User userDetails) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
-        user.setName(userDetails.getName());
+        user.setFirstName(userDetails.getFirstName());
+        user.setLastName(userDetails.getLastName());
         user.setDepartment(userDetails.getDepartment());
-        // Role should only be updated by ADMIN
+        
         return ResponseEntity.ok(userRepository.save(user));
     }
 
     @PatchMapping("/{id}/role")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> updateRole(@PathVariable String id, @RequestParam Role role) {
+    public ResponseEntity<User> updateRole(@PathVariable Long id, @RequestParam String role) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setRole(role);
+        user.setRole(com.enterprisesystemengineering.enums.UserRole.valueOf(role));
         return ResponseEntity.ok(userRepository.save(user));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         userRepository.delete(user);

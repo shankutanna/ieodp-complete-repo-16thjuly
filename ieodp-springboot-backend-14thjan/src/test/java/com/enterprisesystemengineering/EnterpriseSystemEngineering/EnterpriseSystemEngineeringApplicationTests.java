@@ -1,4 +1,4 @@
-package com.enterprisesystemengineering.EnterpriseSystemEngineering;
+package com.enterprisesystemengineering;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

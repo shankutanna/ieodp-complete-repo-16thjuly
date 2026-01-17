@@ -1,4 +1,4 @@
-package com.enterprisesystemengineering.AiInsight;
+package com.enterprisesystemengineering.aiinsight;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;

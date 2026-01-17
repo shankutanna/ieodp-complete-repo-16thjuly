@@ -1,4 +1,4 @@
-package com.enterprisesystemengineering.AiInsight;
+package com.enterprisesystemengineering.aiinsight;
 
 import com.enterprisesystemengineering.audit.AuditService;
 import org.springframework.security.core.Authentication;

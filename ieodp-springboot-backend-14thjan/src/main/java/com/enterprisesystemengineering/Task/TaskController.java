@@ -1,4 +1,4 @@
-package com.enterprisesystemengineering.Task;
+package com.enterprisesystemengineering.task;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

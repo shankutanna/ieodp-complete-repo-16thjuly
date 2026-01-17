@@ -1,4 +1,4 @@
-package com.enterprisesystemengineering.Entity;
+package com.enterprisesystemengineering.entity;
 
 public enum Role {
     ADMIN,

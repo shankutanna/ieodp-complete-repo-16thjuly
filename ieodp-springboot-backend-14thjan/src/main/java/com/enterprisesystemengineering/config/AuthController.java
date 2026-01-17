@@ -1,7 +1,8 @@
 package com.enterprisesystemengineering.config;
 
-import com.enterprisesystemengineering.Entity.User;
-import com.enterprisesystemengineering.Entity.UserRepository;
+import com.enterprisesystemengineering.entity.User;
+import com.enterprisesystemengineering.repository.UserRepository;
+import com.enterprisesystemengineering.enums.UserRole;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class AuthController {
         }
 
         String token = jwtUtil.generateToken(
-                user.getId(),
+                user.getId().toString(),
                 user.getEmail(),
                 user.getRole().name()
         );

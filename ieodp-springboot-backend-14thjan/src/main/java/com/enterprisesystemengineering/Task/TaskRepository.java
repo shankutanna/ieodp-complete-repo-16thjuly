@@ -1,4 +1,4 @@
-package com.enterprisesystemengineering.Task;
+package com.enterprisesystemengineering.task;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,4 +1,4 @@
-package com.enterprisesystemengineering.Task;
+package com.enterprisesystemengineering.task;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
