@@ -1,6 +1,6 @@
 package com.enterprisesystemengineering.repository;
 
-import com.enterprisesystemengineering.entity.AuditLog;
+import com.enterprisesystemengineering.audit.AuditLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

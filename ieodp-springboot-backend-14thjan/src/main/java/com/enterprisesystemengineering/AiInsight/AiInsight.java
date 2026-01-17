@@ -6,8 +6,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "ai_insights")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

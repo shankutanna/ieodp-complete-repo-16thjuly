@@ -1,10 +1,10 @@
 package com.enterprisesystemengineering.service;
 
-import com.enterprisesystemengineering.entity.AuditLog;
+import com.enterprisesystemengineering.audit.AuditLog;
 import com.enterprisesystemengineering.repository.AuditLogRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Service
 public class AuditLogService {
@@ -23,15 +23,16 @@ public class AuditLogService {
                     .map(auth -> auth.getAuthority().replace("ROLE_", ""))
                     .orElse("UNKNOWN");
 
-            AuditLog auditLog = new AuditLog();
-            auditLog.setUserName(userName);
-            auditLog.setRole(role);
-            auditLog.setAction(action);
-            auditLog.setEntity(entity);
-            auditLog.setEntityId(entityId);
-            auditLog.setPreviousState(previousState);
-            auditLog.setNewState(newState);
-            auditLog.setTimestamp(Instant.now());
+            AuditLog auditLog = AuditLog.builder()
+                    .userId(userName)
+                    .role(role)
+                    .action(action)
+                    .entity(entity)
+                    .entityId(entityId)
+                    .previousState(previousState)
+                    .newState(newState)
+                    .timestamp(LocalDateTime.now())
+                    .build();
 
             auditLogRepository.save(auditLog);
         } catch (Exception e) {
