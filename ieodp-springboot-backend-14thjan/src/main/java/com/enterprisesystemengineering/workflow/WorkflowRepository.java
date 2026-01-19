@@ -1,5 +1,6 @@
 package com.enterprisesystemengineering.workflow;
 
+import com.enterprisesystemengineering.enums.WorkflowStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

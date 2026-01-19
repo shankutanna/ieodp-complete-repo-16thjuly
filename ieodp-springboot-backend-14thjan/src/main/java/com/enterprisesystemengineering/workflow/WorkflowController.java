@@ -1,5 +1,6 @@
 package com.enterprisesystemengineering.workflow;
 
+import com.enterprisesystemengineering.enums.WorkflowStatus;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,7 +65,7 @@ public class WorkflowController {
                 .orElseThrow(() -> new RuntimeException("Workflow not found"));
         
         if (updates.containsKey("status")) {
-            workflow.setStatus(com.enterprisesystemengineering.enums.WorkflowStatus.valueOf(updates.get("status").toString()));
+            workflow.setStatus(WorkflowStatus.valueOf(updates.get("status").toString()));
         }
         if (updates.containsKey("name")) {
             workflow.setName(updates.get("name").toString());

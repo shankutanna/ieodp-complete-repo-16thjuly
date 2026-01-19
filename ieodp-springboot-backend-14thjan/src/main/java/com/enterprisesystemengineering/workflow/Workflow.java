@@ -1,6 +1,7 @@
 package com.enterprisesystemengineering.workflow;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.enterprisesystemengineering.enums.WorkflowStatus;
 import jakarta.persistence.*;
 import lombok.*;
 

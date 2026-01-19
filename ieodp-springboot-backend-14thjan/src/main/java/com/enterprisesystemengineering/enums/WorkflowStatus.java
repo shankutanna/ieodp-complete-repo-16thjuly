@@ -6,5 +6,8 @@ public enum WorkflowStatus {
     APPROVED,
     REJECTED,
     ESCALATED,
-    FINAL_APPROVED
+    FINAL_APPROVED,
+    COMPLETED,
+    DRAFT,
+    REOPENED
 }

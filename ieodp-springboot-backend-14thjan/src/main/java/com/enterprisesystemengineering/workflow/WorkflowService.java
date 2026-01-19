@@ -1,6 +1,7 @@
 package com.enterprisesystemengineering.workflow;
 
 import com.enterprisesystemengineering.audit.AuditService;
+import com.enterprisesystemengineering.enums.WorkflowStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
