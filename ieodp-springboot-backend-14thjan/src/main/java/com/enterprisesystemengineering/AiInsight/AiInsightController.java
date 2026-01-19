@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ai-insights")
+@RequestMapping("/aiInsights")
 public class AiInsightController {
 
     private final AiInsightService service;
@@ -27,8 +27,8 @@ public class AiInsightController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGEMENT', 'LEADERSHIP', 'AUDITORS')")
-    public ResponseEntity<List<AiInsight>> getAllInsights() {
+    public ResponseEntity<List<AiInsight>> getAllInsights(
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
         return ResponseEntity.ok(repository.findAll());
     }
 

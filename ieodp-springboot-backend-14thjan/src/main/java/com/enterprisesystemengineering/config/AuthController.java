@@ -6,9 +6,15 @@ import com.enterprisesystemengineering.enums.UserRole;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * Authentication Controller - Kubernetes-friendly React Frontend Integration
+ * Endpoints for login and logout operations
+ */
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/auth")
 public class AuthController {
 
     private final JwtUtil jwtUtil;
@@ -21,6 +27,9 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * POST /auth/login - Login endpoint (also handled by GET /users?email=...&password=...)
+     */
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         if ("admin@gmail.com".equals(request.getEmail()) && "admin123".equals(request.getPassword())) {
@@ -46,5 +55,19 @@ public class AuthController {
         );
 
         return ResponseEntity.ok(new LoginResponse(token, user.getRole().name()));
+    }
+
+    /**
+     * POST /auth/logout - Logout endpoint
+     * React calls this to clear session on backend
+     * Response: { "success": true }
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, Object>> logout(
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "Logged out successfully");
+        return ResponseEntity.ok(response);
     }
 }

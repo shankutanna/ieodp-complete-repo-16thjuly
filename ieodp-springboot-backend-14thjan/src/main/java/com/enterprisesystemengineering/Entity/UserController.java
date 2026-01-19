@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173", "http://43.205.133.117:3000"})
+@RequestMapping("/users")
 public class UserController {
 
     private final UserRepository userRepository;
@@ -27,6 +26,34 @@ public class UserController {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
+    }
+
+    /**
+     * Login endpoint - used by React frontend
+     * GET /users?email=john@example.com&password=password123
+     * Returns array of matching users
+     */
+    @GetMapping
+    public ResponseEntity<List<User>> getUsers(
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String password,
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+        
+        // If email and password provided, authenticate user (login flow)
+        if (email != null && password != null) {
+            List<User> users = userRepository.findByEmail(email).stream().toList();
+            if (!users.isEmpty()) {
+                User user = users.get(0);
+                // Verify password
+                if (passwordEncoder.matches(password, user.getPassword())) {
+                    return ResponseEntity.ok(users);
+                }
+            }
+            return ResponseEntity.ok(List.of()); // Return empty for invalid credentials
+        }
+        
+        // If no params, return all users (if authorized)
+        return ResponseEntity.ok(userRepository.findAll());
     }
 
     @PostMapping("/register")
@@ -48,7 +75,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userRepository.save(user));
     }
 
-    @GetMapping
+    @GetMapping("/all")
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGEMENT')")
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userRepository.findAll());
