@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: ieodp-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: orchestration_db
+      MYSQL_USER: ieodp_user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ieodp-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: ieodp-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ieodp-network
+
+  # Python FastAPI Backend
+  python-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ieodp-python-backend
+    environment:
+      DATABASE_HOST: mysql
+      DATABASE_PORT: 3306
+      DATABASE_USER: ieodp_user
+      DATABASE_PASSWORD: password
+      DATABASE_NAME: orchestration_db
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      API_HOST: 0.0.0.0
+      API_PORT: 8000
+      ENVIRONMENT: development
+      LOG_LEVEL: INFO
+      DEBUG: "true"
+      CORS_ORIGINS: "http://localhost:3000,http://localhost:5173,http://localhost:8080"
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./app:/app/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - ieodp-network
+
+  # Celery Worker for Background Tasks
+  celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ieodp-celery-worker
+    environment:
+      DATABASE_HOST: mysql
+      DATABASE_PORT: 3306
+      DATABASE_USER: ieodp_user
+      DATABASE_PASSWORD: password
+      DATABASE_NAME: orchestration_db
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+    depends_on:
+      - mysql
+      - redis
+    command: celery -A app.workers.celery_app worker -l info
+    networks:
+      - ieodp-network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  ieodp-network:
+    driver: bridge
