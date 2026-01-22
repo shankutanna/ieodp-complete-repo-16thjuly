@@ -1,23 +1,28 @@
 # =========================
-# Namespace
-# =========================
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: ieodp
----
-# =========================
 # MySQL Secret
 # =========================
 apiVersion: v1
 kind: Secret
 metadata:
   name: mysql-secret
-  namespace: ieodp
 type: Opaque
 data:
   MYSQL_ROOT_PASSWORD: cm9vdDEyMw==   # root123
   MYSQL_PASSWORD: cGFzczEyMw==        # pass123
+---
+# =========================
+# MySQL Headless Service (for StatefulSet)
+# =========================
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  clusterIP: None
+  selector:
+    app: mysql
+  ports:
+    - port: 3306
 ---
 # =========================
 # MySQL StatefulSet
@@ -26,9 +31,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mysql
-  namespace: ieodp
 spec:
-  serviceName: mysql-svc
+  serviceName: mysql
   replicas: 1
   selector:
     matchLabels:
@@ -41,9 +45,8 @@ spec:
       containers:
       - name: mysql
         image: mysql:8.0
-        imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 3306
+          - containerPort: 3306
         env:
         - name: MYSQL_DATABASE
           value: ieodpdb
@@ -61,19 +64,18 @@ spec:
               key: MYSQL_ROOT_PASSWORD
 ---
 # =========================
-# MySQL Service
+# MySQL Service (for apps)
 # =========================
 apiVersion: v1
 kind: Service
 metadata:
   name: mysql-svc
-  namespace: ieodp
 spec:
   selector:
     app: mysql
   ports:
-  - port: 3306
-    targetPort: 3306
+    - port: 3306
+      targetPort: 3306
 ---
 # =========================
 # Python Backend Deployment
@@ -82,7 +84,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: python-backend
-  namespace: ieodp
 spec:
   replicas: 1
   selector:
@@ -96,9 +97,8 @@ spec:
       containers:
       - name: python
         image: umatanna9/python-backend:latest
-        imagePullPolicy: Always
         ports:
-        - containerPort: 8000
+          - containerPort: 8000
         env:
         - name: DB_HOST
           value: mysql-svc
@@ -115,19 +115,18 @@ spec:
               key: MYSQL_PASSWORD
 ---
 # =========================
-# Python Backend Service
+# Python Service
 # =========================
 apiVersion: v1
 kind: Service
 metadata:
   name: python-svc
-  namespace: ieodp
 spec:
   selector:
     app: python-backend
   ports:
-  - port: 8000
-    targetPort: 8000
+    - port: 8000
+      targetPort: 8000
 ---
 # =========================
 # Spring Boot Backend Deployment
@@ -136,7 +135,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: springboot-backend
-  namespace: ieodp
 spec:
   replicas: 1
   selector:
@@ -150,9 +148,8 @@ spec:
       containers:
       - name: springboot
         image: umatanna9/springboot-backend:latest
-        imagePullPolicy: Always
         ports:
-        - containerPort: 8080
+          - containerPort: 8080
         env:
         - name: SPRING_DATASOURCE_URL
           value: jdbc:mysql://mysql-svc:3306/ieodpdb
@@ -163,11 +160,8 @@ spec:
             secretKeyRef:
               name: mysql-secret
               key: MYSQL_PASSWORD
-        env:
         - name: PYTHON_API_URL
-         value: http://python-svc:8000
-
-
+          value: http://python-svc:8000
 ---
 # =========================
 # Spring Boot Service
@@ -176,13 +170,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: springboot-svc
-  namespace: ieodp
 spec:
   selector:
     app: springboot-backend
   ports:
-  - port: 8080
-    targetPort: 8080
+    - port: 8080
+      targetPort: 8080
 ---
 # =========================
 # React Frontend Deployment
@@ -191,7 +184,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: react-frontend
-  namespace: ieodp
 spec:
   replicas: 1
   selector:
@@ -205,9 +197,8 @@ spec:
       containers:
       - name: react
         image: umatanna9/react-frontend:latest
-        imagePullPolicy: Always
         ports:
-        - containerPort: 80
+          - containerPort: 80
 ---
 # =========================
 # React Frontend Service
@@ -216,13 +207,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: react-svc
-  namespace: ieodp
 spec:
   type: NodePort
   selector:
     app: react-frontend
   ports:
-  - port: 80
-    targetPort: 80
-    nodePort: 30080
+    - port: 80
+      targetPort: 80
+      nodePort: 30080
 
