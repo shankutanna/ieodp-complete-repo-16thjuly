@@ -2,9 +2,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { registerSchema } from "../registerSchema";
+import { useRegisterMutation } from "../../../api/authApi";
 
 const RegisterForm = () => {
     const navigate = useNavigate();
+    const [registerUser] = useRegisterMutation();
 
     const {
         register,
@@ -14,23 +16,28 @@ const RegisterForm = () => {
         resolver: zodResolver(registerSchema),
     });
 
-    const onSubmit = (data) => {
-        console.log("Register Payload:", data);
-
-        // 👉 Here you will call backend API later
-        // For now, just redirect to login
-        alert("Registration successful! Please login.");
-        navigate("/login");
+    const onSubmit = async (data) => {
+        try {
+            await registerUser(data).unwrap();
+            alert("Registration successful! Please login.");
+            navigate("/login");
+        } catch (err) {
+            console.error("Registration failed:", err);
+            alert("Registration failed. Please try again.");
+        }
     };
 
     return (
-        <div className="flex rounded-md items-center justify-center ">
-            <div className="card w-full max-w-xl bg-base-300 p-4 ">
+        <div className="flex rounded-md items-center justify-center">
+            <div className="card w-full max-w-xl bg-base-300 p-4">
                 <h2 className="text-2xl font-bold mb-4 text-center">
                     Create Your Account
                 </h2>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-x-4 md:space-y-4 grid md:grid-cols-2">
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="space-x-4 md:space-y-4 grid md:grid-cols-2"
+                >
                     {/* FIRST NAME */}
                     <div>
                         <label className="label">
@@ -176,3 +183,4 @@ const RegisterForm = () => {
 };
 
 export default RegisterForm;
+
