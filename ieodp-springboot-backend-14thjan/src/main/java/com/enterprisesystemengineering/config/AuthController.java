@@ -6,37 +6,40 @@ import com.enterprisesystemengineering.enums.UserRole;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Authentication Controller - Kubernetes-friendly React Frontend Integration
- * Endpoints for login and logout operations
- */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api")
 public class AuthController {
 
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthController(JwtUtil jwtUtil, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthController(JwtUtil jwtUtil,
+                          UserRepository userRepository,
+                          PasswordEncoder passwordEncoder) {
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     /**
-     * POST /auth/login - Login endpoint (also handled by GET /users?email=...&password=...)
+     * POST /api/login
      */
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-        if ("admin@gmail.com".equals(request.getEmail()) && "admin123".equals(request.getPassword())) {
-             String token = jwtUtil.generateToken(
-                "123",
-                request.getEmail(),
-                "MANAGEMENT"
+
+        // Hardcoded admin (demo)
+        if ("admin@gmail.com".equals(request.getEmail())
+                && "admin123".equals(request.getPassword())) {
+
+            String token = jwtUtil.generateToken(
+                    "123",
+                    request.getEmail(),
+                    "MANAGEMENT"
             );
             return ResponseEntity.ok(new LoginResponse(token, "MANAGEMENT"));
         }
@@ -58,13 +61,31 @@ public class AuthController {
     }
 
     /**
-     * POST /auth/logout - Logout endpoint
-     * React calls this to clear session on backend
-     * Response: { "success": true }
+     * POST /api/register
+     */
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@RequestBody User user) {
+
+        // basic safety
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already registered");
+        }
+
+        // encode password
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // default role
+        user.setRole(UserRole.USER);
+
+        User savedUser = userRepository.save(user);
+        return ResponseEntity.ok(savedUser);
+    }
+
+    /**
+     * POST /api/logout
      */
     @PostMapping("/logout")
-    public ResponseEntity<Map<String, Object>> logout(
-            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+    public ResponseEntity<Map<String, Object>> logout() {
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
         response.put("message", "Logged out successfully");
