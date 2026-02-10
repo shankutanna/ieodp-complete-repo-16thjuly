@@ -176,6 +176,43 @@ The project currently uses **JSON Server** for demo data.
 
 ---
 
+
+---
+
+## 📱 Android App Build (Capacitor)
+
+To package this React app as an Android app:
+
+1. Install Capacitor dependencies (already added in `package.json`):
+
+   ```bash
+   npm install
+   ```
+
+2. Configure Android API URL:
+
+   ```bash
+   cp .env.android.example .env.production
+   # then edit VITE_API_BASE_URL to your public backend URL
+   ```
+
+3. Build web assets and sync native project:
+
+   ```bash
+   npm run build:mobile
+   npm run android:add   # first time only
+   npm run android:sync
+   npm run android:open
+   ```
+
+4. Use Android Studio to create signed `.aab` / `.apk`.
+
+### Important
+
+- **Dockerfile changes alone are not enough** for Android packaging.
+- Docker builds a web container image; Android needs a native project (`android/`) generated and managed by Capacitor.
+- Backend services (Spring Boot + Python + DB) should stay server-side and be exposed via HTTPS API URL.
+
 ## 📄 Documentation
 
 Detailed documentation is available in the `docs/` folder:
